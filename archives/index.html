@@ -12,7 +12,7 @@
 
     
     <meta name="description" content="朱嘉俊(Abel Joo)的个人博客————生活，工作，学术，杂谈。">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Abel·朱嘉俊">
 <meta property="og:url" content="http://abeljoo.com/archives/index.html">
 <meta property="og:site_name" content="Abel·朱嘉俊">
@@ -86,13 +86,13 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/ci9csa4sr0000w5vn19i4pmym/hello-world/" title="Hello Worldddd" itemprop="url">
+    <a href="/hello-world/" title="Hello World" itemprop="url">
   
 
-    <time datetime="2015-05-06T13:31:17.686Z" itemprop="datePublished">2015-05-06</time>
+    <time datetime="2015-05-06T13:38:21.190Z" itemprop="datePublished">2015-05-06</time>
 
 
-    <h1 itemprop="name">Hello Worldddd</h1>
+    <h1 itemprop="name">Hello World</h1>
 
   </a>
 </section>
@@ -182,8 +182,36 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
   });
 });
 </script>
