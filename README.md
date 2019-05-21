@@ -1,6 +1,6 @@
 # 你可知道「茴」字有几种写法？
 
- [这才是你该来的地方](http//abeljoo.github.io)
+# [这才是你该来的地方 ~\(≧▽≦)/~](http//abeljoo.github.io)
 
 License
 
