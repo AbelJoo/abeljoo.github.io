@@ -1,10 +1,46 @@
-<html>
-  <head>
-    <meta http-equiv="refresh" content="1;url=http://www.jianshu.com/users/12bbae6f9abc/latest_articles">
-      <title>稍等片刻</title>
-  </head>
-  <body>
-    <p>稍等片刻, 马上就好 →_→ </p>
-    <script src="https://s22.cnzz.com/z_stat.php?id=1271463949&web_id=1271463949" language="JavaScript"></script>
-  </body>
-</html>
+---
+layout: page
+description: "当你停止创造，你的才能就不再重要，剩下的只有品味。<br>品味会排斥其他人，让你变得更狭隘。<br>所以，要创造。"
+---
+
+{% for post in paginator.posts %}
+<div class="post-preview">
+    <a href="{{ post.url | prepend: site.baseurl }}">
+        <h2 class="post-title">
+            {{ post.title }}
+        </h2>
+        {% if post.subtitle %}
+        <h3 class="post-subtitle">
+            {{ post.subtitle }}
+        </h3>
+        {% endif %}
+        <div class="post-content-preview">
+            {% if post.lang == 'en' %}
+                {{ post.content | strip_html | truncate:300 }}
+            {% else %}
+                {{ post.content | strip_html | truncate:200 }}
+            {% endif %}
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}
+    </p>
+</div>
+<hr>
+{% endfor %}
+
+<!-- Pager -->
+{% if paginator.total_pages > 1 %}
+<ul class="pager">
+    {% if paginator.previous_page %}
+    <li class="previous">
+        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
+    </li>
+    {% endif %}
+    {% if paginator.next_page %}
+    <li class="next">
+        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
+    </li>
+    {% endif %}
+</ul>
+{% endif %}
