@@ -1,0 +1,90 @@
+---
+layout:     post
+title:      "Binder：为什么要通过 onTransact() 调用目标方法"
+subtitle:   "探索巨人的脉络"
+date:       2016-07-28
+author:     "Abel"
+header-img: "img/header/2016-07-28-Binder-h.jpg"
+catalog: true
+tags:
+  - Binder
+  - AIDL
+  - 编解码
+  - WebP
+---
+
+# 0x00 背景
+
+最近被提出一串问题：为什么`android.os.Binder`要提供`onTransact()`方法给子类重写。为什么要通过`Client:invokeMethod -> onTransact() -> Service:targetMethod`这一曲折过程来调用一个远程方法，为什么不能直接指定方法名称来调用。
+
+这些问题阐述了同一个疑问：**对于调用者而言，目标方法为何远在天边。**
+
+实际上，这并不是一个无关紧要的问题。尝试解答此问题有助于了解API设计者的初衷，以便从不同角度探究可能潜在的问题。了解系统创作者的思想，从而更好地使用其设计的接口及系统特性，避免出现错误决策导致长期迭代中难以维护。
+
+本文假设你已具备IPC（进程间通信）开发经验。
+
+# 0x01 AIDL 与 onTransact()
+
+做一些简单回顾：
+
+首选，无论定义于何处，**`.aidl`文件始终是生成目标`.java`文件的声明标记**。大多数情况下，对`android.os.IInterface`及`android.os.Binder`的继承及实现不应当手动操作。所有的生成行为应当由`.aidl`声明来完成。此外，所生成的目标文件位于`app/build/generated/source`目录下。
+
+其次，`android.os.Binder`实现于`android.os.IBinder`。`android.os.Binder`实现了大多数进程状态所必要的功能，以及所有必要的功能调度。
+
+`.aidl`存在的目的就是为了剔除大量重复性的工作。这其中包括，所生成目标文件下的类种类`Stub`方法：`onTransact(int, android.os.Parcel, android.os.Parcel, int)`。此方法重写自`android.os.Binder`。此外，`.aidl`是为对外暴露接口而设计的。
+
+# 0x02 onTransact() 干了些什么
+
+`Binder.onTransact()`是为`Binder.transact()`的调用而准备的。`Binder.transact()`做了两件事：
+
+```
+public final boolean transact(int code, Parcel data, Parcel reply,
+        int flags) throws RemoteException {
+    if (data != null) {
+        data.setDataPosition(0);
+    }
+    boolean r = onTransact(code, data, reply, flags);
+    if (reply != null) {
+        reply.setDataPosition(0);
+    }
+    return r;
+}
+```
+
+此段代码位于`android/os/Binder.java`
+
+首先，在调用`Binder.onTransact()`之前及之后，分别对请求结构的引用及返回结构的引用重置读写`position`，以及调用`Binder.onTransact()`。在此提醒，`Binder.transact()`的调用者是`Stub`下的内部类`Proxy`中的各个`.aidl`中定义的方法。
+
+最终，千辛万苦地，终于来到了`.aidl`自行生成实现的`Binder.onTransact()`方法了。特别的是，有两个地方值得去注意：
+
+- 其一，在最终的开发中，将会继承抽象类`Stub`，并实现所有在`.aidl`中定义的方法。这些具体方法的直接调用者，正是当前我们所在的`onTransact()`方法；
+
+- 其二，正是基于上面一条，可以得知：无论远程调用者（Client）身处何方，最终，一定会经过此处的`onTransact()`方法，并由`onTransact()`直接调用目标方法。
+
+要知道，传入`onTransact()`方法的参数中，拥有目标方法的`ID`、指向参数的引用，以及指向返回结果的引用。所有远程调用者（Client）想要做的事，都通过层层调用及参数包装汇聚到`onTransact()`，再由`onTransact()`分发到真正的目标方法执行。
+
+那么问题来了。为什么？
+
+# 0x03 关键问题：进程隔离
+
+一个简洁明了的回答是：**除了预先定义的接口，其余的一切实现在进程间均相互不可见。**
+
+现在，以更直观的方式来展示调用者（Client）与服务（Service）间的关系：
+
+![上下层关系](/img/in_post/2016-07-28-Binder-0.png)
+
+显然，所有的Client亦或是Service，都是平级的。原因显而易见：这部分运行时程序，都是基于Android Framework开发的。
+
+那么，如果A程序自行定义了接口，B程序怎样知道A程序定义了接口？换言之：B程序该通过什么方式来查找A程序中的自定义接口以至调用？显然，**所有基于Android Framework开发的程序，都不存在上下级关系。**
+
+同时，由于虚拟机相互独立，因此这些程序并不在同一个运行时中。两两之间相隔一堵不透明的墙，它们唯一可见的，就是下层的`Binder`元素。
+
+答案就此基本浮出水面。Client与Service的状态是不可预知的，使用`Binder Driver `隐藏进程间调用细节，并通过`Binder.onTransact()`分发调用指令，最终在参数引用中写入计算结果——这一过程实现了设计模式中的简易命令模式。整个进程间调用作用于`Binder Driver`，至于`Binder.onTransact()`格外引人瞩目，则是因为它是整个过程的末端操作。
+
+正如上图所示，把所有请求汇聚到`onTransact()`，具体需要请求哪个方法，则抽象为`id`处理。另外，所有目标方法的请求参数及返回体都要求是基本类型或被`.aidl`所定义的。这意味着在传输过程中所有信息都被视作“流”来处理。
+
+# 0x04 更多思考
+
+理解`Binder`调度过程有助于设计更易于维护的接口——尤其是库。某些需求的实现可能需要对`Proxy`及`Stub`进行手动编辑，此时理解API设计者的意图显得极为重要。
+
+毕竟，**维护那些凭直觉写出的代码，简直就是灾难。**

@@ -1,0 +1,177 @@
+---
+layout:     post
+title:      "Android Bitmap 转换 WebP 图片导致损坏的分析及解决方案"
+subtitle:   "要善于观察"
+date:       2016-06-19
+author:     "Abel"
+header-img: "img/header/2016-06-19-webp-fix-h.jpg"
+catalog: true
+tags:
+  - 图片 
+  - 经验
+  - 编解码
+  - WebP
+---
+
+# 0x00 背景
+
+作为移动领域所力推的图片格式，`WebP`图片在商业领域证明了其应有的价值。基于其他格式的横向对比，其在压缩性能表现，及还原度极为优秀，节省大量的带宽开销。基于可观的效益比，团队早前已开始磋商将当前图片资源迁移至.webp资源。
+
+然而对于Android而言，加载`.webp`图片所消耗的时间比`.jpg`及`.png`要慢数倍。对于这点而言是无法忍受的。因此解决方案是：
+
+从网络拿到`.webp`数据流 -> `Bitmap`通过`.png`格式保存到本地
+
+注意，整个过程必须在子线程执行。这样，在使用了`WebP`节省了带宽的同时，下一次加载图片的速度也不会受到影响。
+
+但在客户端实现的最后阶段，出现了一些问题。
+
+![](/img/in_post/2016-06-19-webp-fix-0.png)
+
+# 0x01 问题重现
+
+对于上述的解决方案，隐去业务复杂性，我用以下示例来展示：
+
+```
+private void saveImage(String uri, String savePath) throws IOException {
+
+    // 创建连接
+    HttpURLConnection conn = createConnection(uri);
+    
+    // 拿到输入流,此流即是图片资源本身
+    InputStream imputStream = conn.getInputStream();
+
+    // 指使Bitmap通过流获取数据
+    Bitmap bitmap = BitmapFactory.decodeStream(imputStream);
+
+    File file = new File(savePath);
+
+    OutputStream out = new BufferedOutputStream(new FileOutputStream(file.getCanonicalPath()), BUFFER_SIZE);
+
+    // 指使Bitmap以相应的格式,将当前Bitmap中的图片数据保存到文件
+    if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+        out.flush();
+        out.close();
+    }
+}
+```
+
+上述代码意图明显：拿到流，将该流通过`decodeStream(InputStream)`方法传送到`Bitmap`，随后以`.png`格式存储到本地。
+
+在很长一段时间内，该代码运作良好。直到有一天，在某国产机型上做测试的时候，发现图片保存到本地后出现了损坏。
+
+那些保存到本地出现损坏的图片，长这样：
+
+![损坏的图片](/img/in_post/2016-06-19-webp-fix-1.png)
+
+在这张样图中，图片的下半部分出现了缺失。在随后的循环测试中，每张图片的缺失程度大小不一，从完整到全黑都有。
+
+# 0x02 分析
+
+对于这种情况，第一猜想可能是网络返回的数据流有问题。但在随后的排查中，发现`InputStream`数据流是完整的。随后开始对图片本身进行分析。
+
+对文件差异进行分析是一种好办法。在这里，使用Beyond Compare以不同的方式进行分析。于是准备了两张图片，一张成功从`.webp`转为`.png`，另一张也从`.webp`转为`.png`，但是出现缺失黑块。
+
+现在，通过Picture Compare模式直观地对比两张图片：
+
+![通过Picture Compare模式对比图片](/img/in_post/2016-06-19-webp-fix-2.png)
+
+在这里，左侧为完整图片，右侧为存在数据缺失的图片，下方为差异标记：红色区域为两张图片的差异之处。
+
+可以观察到，相对于完整图片而言，存在数据缺失的图片并非零散地缺失数据，而是从某一刻开始，数据便不复存在了。
+
+为了进一步考究导致差异的根本原因，可以通过Hex Compare模式进行对比。也就是说，以十六进制的方式对比文件。现在，通过Hex Compare模式进行文件对比：
+
+![通过Hex Compare模式进行文件对比](/img/in_post/2016-06-19-webp-fix-3.png)
+
+左侧的红条表示两个文件中二进制数据不一致的地方。
+
+其中，左侧为完整的`.png`文件，右侧为存在缺失黑块的`.png`文件。观察缺失文件的十六进制数据，存在着大量的空值块（0x00000000），并且数据长度是短于完整文件的。同时，此现象与早前出现黑块的规律相似：大块的数据丢失，并非零散的缺失。
+
+但是，文件的分析尚未结束。有一个非常重要的问题不要忽略了：
+
+**我们是打开了一张数据损坏的图像吗？**
+
+我们知道，**如果一个图像文件的关键数据块出现损坏，该图像是无法被打开的。**也就是说，**如果一个图像文件能够被打开，说明该图像文件结构完整。**
+
+那么，如何分析一张图像的数据块是否完整？在这里，我们关心的是：**那张缺失的图像，文件末尾写入成功了吗？**
+
+在这里有必要解释一下`PNG`文件末尾的数据块是个什么东西。引用`PNG`格式标准的官方说法（[PNG格式块简述：w3.org](https://www.w3.org/TR/PNG-Structure.html)）：
+
+> Chunks can appear in any order, subject to the restrictions placed on each chunk type. (One notable restriction is that IHDR must appear first and IEND must appear last; thus the IEND chunk serves as an end-of-file marker.) Multiple chunks of the same type can appear, but only if specifically permitted for that type.
+
+> 解释：在整个PNG文件中，用以标记文件开始的IHDR标记必须在文件的最开始，标记文件结束的IEND标记必须在文件的最末端。对于其他数据块则没有顺序要求。
+
+也就是说，如果一张`PNG`图片能够被打开，那么它在文件的最后，必定存在`IEND`标记。
+
+回到刚才的Hex Compare，拉到最底部，于是发现：
+
+![完整的文件末尾写入](/img/in_post/2016-06-19-webp-fix-4.png)
+
+没错。两张图片的末端都有`IEND`标记。
+
+也就是说，那张存在黑块的`.png`文件，IO写入并没有问题。随后与手机厂商沟通，问题也近乎尘埃落定：**该手机ROM在处理`BitmapFactory`的底层出现问题。**
+
+# 0x03 解决方案
+
+现在的问题很明确，`BitmapFactory`中某些`native`方法存在bug。那是不是所有的`native`方法都有问题呢？
+
+`BitmapFactory.decodeStream(InputStream)`方法最终调用的是`native`方法`nativeDecodeStream(InputStream, byte[], Rect, Options)`。尝试绕开它试试看。
+
+可否尝试将网络数据流保存到内存，随后再将其指向`BitmapFactory`？答案是肯定的。我们尝试替换一部分代码。将此部分代码：
+
+```
+// 拿到输入流,此流即是图片资源本身
+InputStream imputStream = conn.getInputStream();
+
+// 指使Bitmap通过流获取数据
+Bitmap bitmap = BitmapFactory.decodeStream(imputStream);
+```
+
+替换成：
+
+```
+// 拿到输入流,此流即是图片资源本身
+InputStream imputStream = conn.getInputStream();
+
+// 将所有InputStream写到byte数组当中
+byte[] targetData = null;
+byte[] bytePart = new byte[4096];
+while (true) {
+    int readLength = imputStream.read(bytePart);
+    if (readLength == -1) {
+        break;
+    } else {
+        byte[] temp = new byte[readLength + (targetData == null ? 0 : targetData.length)];
+        if (targetData != null) {
+            System.arraycopy(targetData, 0, temp, 0, targetData.length);
+            System.arraycopy(bytePart, 0, temp, targetData.length, readLength);
+        } else {
+            System.arraycopy(bytePart, 0, temp, 0, readLength);
+        }
+        targetData = temp;
+    }
+}
+
+// 指使Bitmap通过byte数组获取数据
+Bitmap bitmap = BitmapFactory.decodeByteArray(targetData, 0, targetData.length);
+```
+
+`BitmapFactory.decodeByteArray(byte[], int, int)`方法最终调用了`native`方法`nativeDecodeByteArray(byte[], int, int, Options)`，与通过`InputStream`处理所指向的`native`方法不同。
+
+经过测试，使用这种方法所保存的`.png`文件不存在黑块问题。我们无法得知厂商ROM中对于这两种方法有什么差异对待，但至少可以明确：上文中提到的那台国产机子，通过`InputStream`传递`WebP`数据并存储为`.png`图像这一过程存在可预知的bug。
+
+至此，问题分析及解决方案阐述完毕。
+
+# 0x04 后记
+
+对于这种结论我是跪了一地的。。。
+
+毕竟不是第一次遇到这种问题。每当厂商ROM出现bug，这种锅就得开发者来背。
+
+你总不能等厂商去修复吧？你的App新版还要不要上线？再说了，厂商修复了，用户也未必会去升级。除了少数几个厂商把ROM品牌玩的飞起，其他厂商即使更新ROM版本，能够主动升级的用户也并非多数。
+
+所以，我很讨厌那种所谓**“深度定制”**的系统。
+
+你说优化系统好不好，我当然支持。但是拜托，要有把握才去改。埋的坑，以后填都填不上，何必呢。老大哥Google写的代码你说不好要去改，改完搞不好就没人维护了。
+
+机友们说得好：**Nexus大法好**。
