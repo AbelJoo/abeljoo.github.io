@@ -13,6 +13,8 @@ tags:
   - WebP
 ---
 
+> 原创文章，首发自简书。[前往查看](https://www.jianshu.com/p/b260051237fe)
+
 # 0x00 背景
 
 最近被提出一串问题：为什么`android.os.Binder`要提供`onTransact()`方法给子类重写。为什么要通过`Client:invokeMethod -> onTransact() -> Service:targetMethod`这一曲折过程来调用一个远程方法，为什么不能直接指定方法名称来调用。

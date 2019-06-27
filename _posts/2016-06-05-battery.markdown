@@ -12,6 +12,8 @@ tags:
   - 性能优化
 ---
 
+> 原创文章，首发自简书。[前往查看](https://www.jianshu.com/p/27ba2759b221)
+
 # 0x00 这是啥？
 
 这是一篇讲述应用耗电的文章，围绕 Android 电量采集机制及第二代 [Battery Historian](https://github.com/google/battery-historian) 分析工具讲述。文从数据采集、导出、环境搭建、解读报告的角度出发，从细节讲解整个流程。和大谈概念的文章不同，这里将进行实际操作及分析。
