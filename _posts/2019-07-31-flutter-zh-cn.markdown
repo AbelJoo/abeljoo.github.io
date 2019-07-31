@@ -31,7 +31,7 @@ tags:
 
 > 前往 [Action Sheets](https://developer.apple.com/design/human-interface-guidelines/ios/views/action-sheets/) 了解更多关于 iOS 原生 ``Action Sheets`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-30 at 11.56.48.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-30 at 11.56.48.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
@@ -147,7 +147,7 @@ void showDemoActionSheet({BuildContext context, Widget child}) {
 
 > 前往 [Activity Indicators](https://developer.apple.com/design/human-interface-guidelines/ios/controls/progress-indicators/#activity-indicators) 了解更多关于 iOS 原生 ``Activity Indicators`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-30 at 13.21.47.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-30 at 13.21.47.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
@@ -199,9 +199,9 @@ Widget build(BuildContext context) {
 
 > 前往 [Alerts](https://developer.apple.com/design/human-interface-guidelines/ios/views/alerts/) 了解更多关于 iOS 原生 ``Alerts`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-30 at 14.58.41.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-30 at 14.58.41.png)
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-30 at 14.59.07.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-30 at 14.59.07.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。同时，``CupertinoAlertDialog `` 也用于取代 ``CupertinoDialog``，``CupertinoDialog`` 已被标记为 ``@Deprecated``。
 
@@ -315,7 +315,7 @@ class CupertinoDessertDialog extends StatelessWidget {
 
 > 前往 [Buttons](https://developer.apple.com/design/human-interface-guidelines/ios/controls/buttons/) 了解更多关于 iOS 原生 ``Buttons`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-30 at 15.48.21.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-30 at 15.48.21.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
@@ -436,15 +436,15 @@ Widget build(BuildContext context) {
 
 > 前往 [Pickers](https://developer.apple.com/design/human-interface-guidelines/ios/controls/pickers/) 了解更多关于 iOS 原生 ``Pickers`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.15.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.15.png)
 
 > date 类型的 picker
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.18.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.18.png)
 
 > time 类型的 picker
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.21.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 11.42.21.png)
 
 > date & time 类型的 picker
 
@@ -541,7 +541,7 @@ Widget _buildBottomPicker(Widget picker) {
 
 > 前往 [UINavigationBar](https://developer.apple.com/documentation/uikit/uinavigationbar) 了解更多关于 iOS 原生 ``UINavigationBar`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 17.31.15.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 17.31.15.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
@@ -644,7 +644,7 @@ class ChatPage extends StatelessWidget {
 
 > 前往 [Pickers](https://developer.apple.com/design/human-interface-guidelines/ios/controls/pickers/) 了解更多关于 iOS 原生 ``Pickers`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 22.30.19.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 22.30.19.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
@@ -774,7 +774,7 @@ Widget _buildBottomPicker(Widget picker) {
 
 > 前往 [Sliders](https://developer.apple.com/design/human-interface-guidelines/ios/controls/sliders/) 了解更多关于 iOS 原生 ``Sliders`` 的详细内容。
 
-![](img/in_post/flutter_img/Screen Shot 2019-07-31 at 23.03.36.png)
+![](/img/in_post/flutter_img/Screen Shot 2019-07-31 at 23.03.36.png)
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
