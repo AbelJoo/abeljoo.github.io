@@ -24,6 +24,8 @@ tags:
 > 本文授权并同步首发于欢聚时代旗下技术公众号：**YYGeeker**。更多干货，欢迎订阅。
 >
 > **未经许可，严禁转载。**
+> 
+> 本文地址 [https://abeljoo.com/2019/07/31/flutter-zh-cn/](https://abeljoo.com/2019/07/31/flutter-zh-cn/)
 
 # CupertinoActionSheet & CupertinoActionSheetAction
 
