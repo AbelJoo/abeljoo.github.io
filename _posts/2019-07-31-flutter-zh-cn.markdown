@@ -19,7 +19,7 @@ tags:
 
 **Cupertino 是 iOS 的官方设计语言。Flutter 对其进行了高保真的还原，以谋求与原生控件一致的效果。**
 
-本文对 [Cupertino (iOS-style) widgets](https://flutter.dev/docs/development/ui/widgets/cupertino) 下的内容进行简要翻译，意图为清晰而准确的描述每个 widget 的用法。所有示例均带截图及 demo code，欢迎交流和指正。
+本文对 [Cupertino (iOS-style) widgets](https://flutter.dev/docs/development/ui/widgets/cupertino) 下的内容进行非逐字对应的简要翻译，意图为清晰而准确的描述每个 widget 的用法。所有示例均带 demo code，效果与截图一致。欢迎交流和指正。
 
 > 本文授权并同步首发于欢聚时代旗下技术公众号：**YYGeeker**。更多干货，欢迎订阅。
 >
