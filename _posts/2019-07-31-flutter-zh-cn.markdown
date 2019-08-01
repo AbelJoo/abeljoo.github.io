@@ -21,6 +21,8 @@ tags:
 
 本文对 [Cupertino (iOS-style) widgets](https://flutter.dev/docs/development/ui/widgets/cupertino) 下的内容进行非逐字对应的简要翻译，意图为清晰而准确的描述每个 widget 的用法。所有示例均带 demo code，效果与截图一致。欢迎交流和指正。
 
+所有 demo 使用的 Flutter 库版本为 ``1.7.8+hotfix.3``。
+
 > 本文授权并同步首发于欢聚时代旗下技术公众号：**YYGeeker**。更多干货，欢迎订阅。
 >
 > **未经许可，严禁转载。**
@@ -84,7 +86,7 @@ bool isDestructiveAction: false,
 
 - ``isDestructiveAction`` 标记是否显示警告样式，即红色字体。本 demo 的 *Trifle* 按钮体现了该特性。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -153,7 +155,7 @@ void showDemoActionSheet({BuildContext context, Widget child}) {
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
-## Constructors & Properties
+## 构造 & 属性
 
 ``CupertinoActionSheet`` 构造函数的实现如下。
 
@@ -169,7 +171,7 @@ double radius: _kDefaultIndicatorRadius
 
 - ``radius`` 指定了 Loading 的半径。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -252,7 +254,7 @@ TextStyle textStyle,
 
 - ``isDestructiveAction`` 标记是否显示警告样式，即红色字体。本 demo 的 *Don't Allow* 按钮体现了该特性。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -370,7 +372,7 @@ BorderRadius borderRadius: const BorderRadius.all(Radius.circular(8.0)),
 
 他通过 filled 方法来实现另一个构造。所有属性的含义与 Normal Style 是一致的。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -452,7 +454,7 @@ Widget build(BuildContext context) {
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
-## Constructors & Properties
+## 构造 & 属性
 
 ``CupertinoDatePicker`` 构造函数的实现如下。
 
@@ -484,7 +486,7 @@ bool use24hFormat: false
 
 - ``use24hFormat`` 用于表示时间是否以 24 小时显示。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -607,7 +609,7 @@ Object heroTag: _defaultHeroTag
 
 - ``actionsForegroundColor`` 左侧组件的颜色。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -650,7 +652,7 @@ class ChatPage extends StatelessWidget {
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
-## Constructors & Properties
+## 构造 & 属性
 
 ``CupertinoPicker`` 构造函数的实现如下。
 
@@ -689,7 +691,7 @@ bool looping: false
 
 - ``looping`` 列表是否持续循环，永无尽头。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -780,7 +782,7 @@ Widget _buildBottomPicker(Widget picker) {
 
 需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
 
-## Constructors & Properties
+## 构造 & 属性
 
 ``CupertinoSlider`` 构造函数的实现如下。
 
@@ -814,7 +816,7 @@ Color activeColor
 
 - ``activeColor`` 滑动条的颜色。demo 效果中第二个效果。
 
-## Demo
+## 示例代码
 
 此 demo 完整实例如下。
 
@@ -873,6 +875,435 @@ Widget build(BuildContext context) {
       ),
     ),
   );
+}
+```
+
+# CupertinoSwitch
+
+``CupertinoSwitch`` 仿生了 iOS 原生系统中的 ``Switches`` 组件，该组件用于创建开关按钮。
+
+开关本身不维护任何状态，外部唯一能感知的，只要开关状态被切换时的回调监听。因此，当开关状态变化时，你应当实时修改你的值。同样，当你的值发生变化时，应当及时更新开关状态。
+
+> 前往 [Switches](https://developer.apple.com/design/human-interface-guidelines/ios/controls/switches/) 了解更多关于 iOS 原生 ``Switches`` 的详细内容。
+
+![](/img/in_post/flutter_img/Screen Shot 2019-08-01 at 15.27.03.png)
+
+需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
+
+## 构造 & 属性
+
+``CupertinoSwitch`` 构造函数的实现如下。
+
+```
+const CupertinoSwitch({
+Key key,
+@required bool value,
+@required ValueChanged<bool> onChanged,
+Color activeColor,
+DragStartBehavior dragStartBehavior: DragStartBehavior.start
+})
+```
+
+- ``value`` 用于指定初始化状态为 on 或 off。
+
+- ``onChanged`` 用于监听按钮的变化。**如果此值为 null，按钮则会自动变为 disable**。
+
+- ``activeColor`` 按钮的颜色。
+
+## 示例代码
+
+此 demo 完整实例如下。
+
+```
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(widget.title),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          const Padding(padding: EdgeInsets.all(12.0)),
+          Text(
+            'CupertinoSwitch',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          ),
+          const Padding(padding: EdgeInsets.all(12.0)),
+          CupertinoSwitch(
+            dragStartBehavior: DragStartBehavior.down,
+            value: _switchValue,
+            activeColor: Color(0xffff0000),
+            onChanged: (bool value) {
+              setState(() {
+                _switchValue = value;
+              });
+            },
+          ),
+          Text("Enabled - ${_switchValue ? "On" : "Off"}"),
+          CupertinoSwitch(
+            value: true,
+            activeColor: Color(0xffff0000),
+            onChanged: null,
+          ),
+          Text('Disabled - On'),
+          CupertinoSwitch(
+            value: true,
+            onChanged: null,
+          ),
+          Text('Disabled - On'),
+          CupertinoSwitch(
+            value: false,
+            onChanged: null,
+          ),
+          Text('Disabled - Off'),
+        ],
+      ),
+    ),
+  );
+}
+```
+
+# CupertinoTabScaffold & CupertinoTabBar & CupertinoTabView
+
+``CupertinoTabScaffold`` 仿生了 iOS 原生系统中的 ``Tab Bars`` 组件，该组件用于创建屏幕底部的 tab 交互，及选中 tab 的布局切换。它分为两部分：底部的 tab 栏，以及剩余的空白区域。
+
+``CupertinoTabBar`` 用于填充 ``CupertinoTabScaffold`` 中的 tab 栏，用户点击 tab 中不同的 item，以切换 ``CupertinoTabScaffold`` 中的空白区域。
+
+``CupertinoTabView`` 则用于填充 ``CupertinoTabScaffold`` 中的空白区域，``CupertinoTabView`` 能通过参数指定需要加载的 widget，典型的用法是，当 ``CupertinoTabBar`` 的 item 被点击时，通知 ``CupertinoTabView`` 切换主界面。
+
+需要注意的是，``CupertinoTabBar`` item 数量应当与 ``CupertinoTabView`` 所能切换的数量相等。当 ``CupertinoTabView`` 的界面被移出可视范围时，动画会被禁用。此外，虽然 ``CupertinoTabScaffold`` 底部 tab 支持制表符，但不建议这样操作。因为这违反了 iOS 交互指南。
+
+> 前往 [iOS 人机交互指南](https://developer.apple.com/design/human-interface-guidelines/ios/bars/tab-bars/) 了解更多关于 iOS 原生 ``Tab Bars`` 的详细内容。
+
+![](/img/in_post/flutter_img/Screen Shot 2019-08-01 at 17.04.23.png)
+
+需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
+
+## CupertinoTabScaffold
+
+``CupertinoTabScaffold`` 构造函数的实现如下。
+
+```
+CupertinoTabScaffold({
+Key key,
+@required CupertinoTabBar tabBar,
+@required IndexedWidgetBuilder tabBuilder,
+CupertinoTabController controller,
+Color backgroundColor,
+bool resizeToAvoidBottomInset: true
+})
+```
+
+- ``tabBar`` 用于放置 ``CupertinoTabBar``。
+
+- ``tabBuilder`` 用于放置 ``CupertinoTabView``。
+
+- ``controller`` 自定义的控制器，如果您需要对切换行为自定义需求。默认情况下内置的控制器会自行管理。
+
+- ``backgroundColor`` 背景色设置。
+
+- ``resizeToAvoidBottomInset`` 当底部有其他内容入侵时，是否需要对界面进行重新计算。典型的情况是，底部键盘弹起时。
+
+## CupertinoTabBar
+
+``CupertinoTabBar`` 构造函数的实现如下。
+
+```
+const CupertinoTabBar({
+Key key,
+@required List<BottomNavigationBarItem> items,
+ValueChanged<int> onTap,
+int currentIndex: 0,
+Color backgroundColor,
+Color activeColor,
+Color inactiveColor: CupertinoColors.inactiveGray,
+double iconSize: 30.0,
+Border border: const Border(top: BorderSide(color: _kDefaultTabBarBorderColor, width: 0.0, style: BorderStyle.solid))
+})
+```
+
+- ``items`` 这是一个列表，用于指定每个 tab 的文字和 icon。
+
+- ``onTap`` 当 tab 发生切换时回调。
+
+- ``currentIndex`` 设置当前选中的 index，注意别的超过 ``items`` 的长度。
+
+- ``backgroundColor`` tab 的背景色。
+
+- ``activeColor`` item 被选中时元素的颜色。
+
+- ``inactiveColor`` item 未被选中时元素的颜色。
+
+- ``iconSize`` item 中 icon 的大小，即 ``BottomNavigationBarItem`` 中 ``activeIcon`` 的大小。
+
+- ``border`` tab 描边的颜色。默认是 1px 的描边，一般情况不需要设置。
+
+## CupertinoTabView
+
+``CupertinoTabView`` 构造函数的实现如下。
+
+```
+const CupertinoTabView({
+Key key,
+WidgetBuilder builder,
+GlobalKey<NavigatorState> navigatorKey,
+String defaultTitle,
+Map<String, WidgetBuilder> routes,
+RouteFactory onGenerateRoute,
+RouteFactory onUnknownRoute,
+List<NavigatorObserver> navigatorObservers: const []
+})
+```
+
+- ``builder`` 页面的构造器，通过所给予的参数决定需要构造什么样的 widget。典型的做法，即通过 ``CupertinoTabBar`` 中选中 item 的 index 做不同切换。
+
+- ``defaultTitle`` 在路由中的默认名字。
+
+- ``currentIndex`` 设置当前选中的 index，注意别的超过 ``items`` 的长度。
+
+- ``routes`` 用于承载每个界面的路由信息。
+
+- ``onGenerateRoute`` 为路由行为回调，当此行为发生异常时，则通过 ``onUnknownRoute`` 回调。
+
+- ``navigatorObservers`` 导航器的观察者列表。
+
+## 示例代码
+
+此 demo 完整实例如下。
+
+```
+class _MyPageState extends State {
+  @override
+  Widget build(BuildContext context) {
+    //最外层导航选项卡
+    return CupertinoTabScaffold(
+      //底部选项卡
+      tabBar: CupertinoTabBar(
+        activeColor: Color(0xffff0000),
+        backgroundColor: CupertinoColors.lightBackgroundGray, //选项卡背景色
+        items: [
+          //选项卡项 包含图标及文字
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.home),
+            title: Text('主页'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.conversation_bubble),
+            title: Text('聊天'),
+          ),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        //选项卡绑定的视图
+        return CupertinoTabView(
+          builder: (context) {
+            switch (index) {
+              case 0:
+                return HomePage();
+                break;
+              case 1:
+                return ChatPage();
+                break;
+              default:
+                return Container();
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: Color(0x6655500a),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text("主页"),
+      ),
+      child: Center(
+        child: Text(
+          'This is 主页 layout',
+          style: Theme.of(context).textTheme.button,
+        ),
+      ),
+    );
+  }
+}
+
+class ChatPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: Color(0xffffaaaa),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text("聊天面板"),
+        trailing: Icon(CupertinoIcons.add),
+        leading: Icon(CupertinoIcons.back),
+      ),
+      child: Center(
+        child: Text(
+          'This is 聊天面板 layout',
+          style: Theme.of(context).textTheme.button,
+        ),
+      ),
+    );
+  }
+}```
+
+# CupertinoTextField
+
+``CupertinoTextField`` 仿生了 iOS 原生系统中的 ``UITextField`` 组件，该组件用于创建输入框。
+
+值得注意的是，**Flutter 几乎把整个 iOS 键盘输入特性搬了过来，包括长按空格键移动光标这一牛逼特性**。你可以使用此 widget 实现几乎仿真 iOS 的交互体验，最后不要忘记释放 ``TextEditingController``。
+
+> 前往 [UITextField](https://developer.apple.com/documentation/uikit/uitextfield) 了解更多关于 iOS 原生 ``UITextField`` 的详细内容。
+
+![](/img/in_post/flutter_img/Screen Shot 2019-08-01 at 21.51.30.png)
+
+需要使用此特性，您需要在工程文件的头部引入 ``package:flutter/cupertino.dart``。
+
+## 构造 & 属性
+
+``CupertinoSwitch`` 构造函数的实现如下。
+
+```
+const CupertinoTextField({
+Key key,
+TextEditingController controller,
+FocusNode focusNode,
+BoxDecoration decoration: _kDefaultRoundedBorderDecoration,
+EdgeInsetsGeometry padding: const EdgeInsets.all(6.0),
+String placeholder,
+TextStyle placeholderStyle: const TextStyle(fontWeight: FontWeight.w300, color: _kInactiveTextColor),
+Widget prefix,
+OverlayVisibilityMode prefixMode: OverlayVisibilityMode.always,
+Widget suffix,
+OverlayVisibilityMode suffixMode: OverlayVisibilityMode.always,
+OverlayVisibilityMode clearButtonMode: OverlayVisibilityMode.never,
+TextInputType keyboardType,
+TextInputAction textInputAction,
+TextCapitalization textCapitalization: TextCapitalization.none,
+TextStyle style,
+StrutStyle strutStyle,
+TextAlign textAlign: TextAlign.start,
+bool readOnly: false,
+bool showCursor,
+bool autofocus: false,
+bool obscureText: false,
+bool autocorrect: true,
+int maxLines: 1,
+int minLines,
+bool expands: false,
+int maxLength,
+bool maxLengthEnforced: true,
+ValueChanged<String> onChanged,
+VoidCallback onEditingComplete,
+ValueChanged<String> onSubmitted,
+List<TextInputFormatter> inputFormatters,
+bool enabled,
+double cursorWidth: 2.0,
+Radius cursorRadius: const Radius.circular(2.0),
+Color cursorColor,
+Brightness keyboardAppearance,
+EdgeInsets scrollPadding: const EdgeInsets.all(20.0),
+DragStartBehavior dragStartBehavior: DragStartBehavior.start,
+bool enableInteractiveSelection,
+ScrollController scrollController,
+ScrollPhysics scrollPhysics
+})
+```
+
+- ``autocorrect`` 是否启用语法自动修正。
+
+- ``autofocus`` 当文本框获得焦点时，是否自动弹出键盘。否则只有用户点击时才会弹出。
+
+- ``clearButtonMode`` 在空间尾部增加一个清除按钮。
+
+- ``controller`` 文本的输入控制器。如果你有需要监听用户的输入行为，则需要自定义。
+
+- ``cursorColor`` 光标的颜色。
+
+- ``cursorRadius`` 光标的圆角半径。
+
+- ``cursorWidth`` 光标的宽度。
+
+- ``decoration`` 控件文本输入后框的框装饰。默认情况下有一个圆角矩形灰色边框，可以为空。
+
+- ``enabled`` 如果为 false 则为禁用此输入框，并且背景为灰色。此时 touch 事件都将不会响应。
+
+- ``enableInteractiveSelection`` 默认为 true，用户可以长按文字进行复制粘贴等操作。反之为 false。
+
+- ``inputFormatters`` 提供你的格式验证和重写算法。widget 会依照你所提供的顺序执行。
+
+- ``keyboardAppearance`` 键盘的外观，仅 iOS 可用。
+
+- ``keyboardType`` 键盘的类型。
+
+- ``maxLength`` 最大允许的字符数。
+
+- ``maxLengthEnforced`` 如果为 true，则强行阻止其超过最大数限制，否则仅仅是警告。默认为 false。
+
+- ``maxLines`` 为最大允许的行数，``minLines`` 则为最小允许的行数。
+
+- ``obscureText`` 是否使用隐藏文本。例如，输入密码时。
+
+- ``onChanged`` 当文本发生变化时回调。
+
+- ``onEditingComplete`` 当用户按下键盘的「完成（Done）」时回调。
+
+- ``placeholder`` 当文本框无内容时的浅色占位符。
+
+- ``placeholderStyle`` 浅色占位符的样式。
+
+- ``prefix`` 在文本框头部显示的前缀小控件，``prefixMode`` 设置前缀小控件的显示方式。
+
+- ``readOnly`` 此编辑框是否仅仅是只读的模式。
+
+- ``showCursor`` 光标是否显示。
+
+- ``suffix`` 在文本框尾部显示的后缀小控件，``suffixMode`` 设置后缀小控件的显示方式。
+
+- ``textAlign`` 在水平的方向上，文本要以何种方式对齐。
+
+- ``textCapitalization`` 指定键盘的大小写显示模式。
+
+- ``textInputAction`` 键盘右下角的「Enter」按钮应当显示什么文字。例如，「完成」，「加入」等样式。
+
+## 示例代码
+
+此 demo 完整实例如下。
+
+```
+class MyPrefilledText extends StatefulWidget {
+  @override
+  _MyPrefilledTextState createState() => _MyPrefilledTextState();
+}
+
+class _MyPrefilledTextState extends State<MyPrefilledText> {
+  TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController(text: 'input here!');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoTextField(
+      clearButtonMode: OverlayVisibilityMode.always,
+      keyboardAppearance: Brightness.dark,
+      controller: _textController,
+        cursorRadius: Radius.circular(40),
+      cursorWidth: 8,
+      cursorColor: Color(0xffff0000),
+      autocorrect: true,
+    );
+  }
 }
 ```
 
