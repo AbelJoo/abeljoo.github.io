@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Flutter for iOS 设计语言：Cupertino 中文翻译"
-subtitle:   "用前人的尸骨，来抹平道路的崎岖。一次又一次。"
+subtitle:   "用前人的尸骨，抹平道路的崎岖"
 date:       2019-07-31
 author:     "Abel"
 header-img: "img/header/2019-07-31-flutter-zh-cn-h.jpg"
