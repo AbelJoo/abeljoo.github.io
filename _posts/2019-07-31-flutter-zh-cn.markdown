@@ -1152,7 +1152,8 @@ class ChatPage extends StatelessWidget {
       ),
     );
   }
-}```
+}
+```
 
 # CupertinoTextField
 
