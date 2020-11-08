@@ -54,7 +54,7 @@ java.lang.UnsupportedOperationException
 
 这得从 ``CopyOnWriteArrayList`` 的实现说起。
 
-大家是否了解过 ``CopyOnWriteArrayList`` ？不了解也没关系，简单给大家介绍下。
+不管是否了解 ``CopyOnWriteArrayList`` 也没关系，简单给大家介绍下。
 
 顾名思义：「在写入的时候做拷贝的数组链表」。``CopyOnWriteArrayList`` 是一个遍历安全（Iterator Safety）的乐观锁链表，在进行读操作时不上锁，因此可以支持大并发的读取。而在写操作时，为了不影响正在并发的读操作，它会拷贝一份原来的数组，写入完毕后，替换原有数组的指针。
 
