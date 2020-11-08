@@ -44,7 +44,7 @@ java.lang.UnsupportedOperationException
 
 # 事情是这样的
 
-众所周之 ``LinkedList`` ，``ArrayList`` 之类的链表在并发时是不安全的。在并发时候的时候，可能出现意外的数组越界一类的错误。
+众所周知 ``LinkedList`` ，``ArrayList`` 之类的链表在并发时是不安全的。在并发时候的时候，可能出现意外的数组越界一类的错误。
 
 顺理成章的，我替换成了 ``CopyOnWriteArrayList`` 这一多线程读写安全的链表。由于我需要排序，因此使用了``Collection.sort()`` 执行排序。看起来没有问题，但偏偏出现了文章开头的一幕。
 
