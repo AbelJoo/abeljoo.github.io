@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "MacBook电池：我膨胀了，想退休了"
+title:      "MacBook：我膨胀了，想退休了"
 subtitle:   "不，你不想。换电池的事交给我"
 date:       2020-11-22
 author:     "Abel"
